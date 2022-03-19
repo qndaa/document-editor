@@ -1,4 +1,5 @@
 import json
+from collections import Counter
 
 from flask import Flask, request
 
@@ -24,7 +25,7 @@ def predict():
 
     clean = [clean_text(input_text, sample, contract_type) for sample in dirty]
 
-    return json.dumps(clean)
+    return json.dumps(Counter(clean).most_common())
 
 
 if __name__ == '__main__':
