@@ -16,6 +16,31 @@ const example_words = [
   "other",
 ];
 
+const contractTypes = [
+  "Affiliate Agreement",
+  "Co-Branding Agreement",
+  "Development Agreement",
+  "Distributor Agreement",
+  "Endorsement Agreement",
+  "Franchise Agreement",
+  "Hosting agreement",
+  "IP Agreement",
+  "Joint Venture Agreement",
+  "License Agreement",
+  "Maintenance Agreement",
+  "Manufacturing Agreement",
+  "Marketing Agreement",
+  "Non-Competition Agreement",
+  "Outsourcing Agreement",
+  "Reseller Agreement",
+  "Service Agreement",
+  "Sponsorship Agreement",
+  "Supply Agreement",
+  "Transportation Agreement",
+  "Strategic Alliance Agreement",
+  "Promotion Agreement",
+];
+
 function App() {
   const [input, setInput] = useState("");
   const [words, setWords] = useState([
@@ -26,14 +51,16 @@ function App() {
 
   const sendOnAPI = (text) => {
     axios
-      .post(`${process.env.REACT_APP_BACKEND_URL}/predict/`, {
-        text: input,
+      .post(`http://localhost:5000/predict/`, {
+        text: text.trim(),
         type: "Agency agreement",
       })
-      .then((res) => console.table(res));
+      .then((res) => {
+        setWords(res.data.splice(0, 3).map((w) => w[0]));
+      });
   };
 
-  const api = useCallback(debounce(sendOnAPI, 1000), []);
+  const api = useCallback(debounce(sendOnAPI, 400), []);
 
   const onChangeInput = (event) => {
     api(event);
@@ -43,6 +70,14 @@ function App() {
     console.log(word);
     setInput(input.concat(" ", word));
   };
+
+  const renderOptions = () => (
+    <>
+      {contractTypes.map((ct) => (
+        <option key={ct}>{ct}</option>
+      ))}
+    </>
+  );
 
   const renderWords = () => {
     return words.map((word) => {
@@ -67,10 +102,7 @@ function App() {
       </div>
       <div className={`d-flex justify-content-center mb-5 mt-4`}>
         <label className={`p-2 fw-bold`}>Document type:</label>
-        <select className={`form-select w-50`}>
-          <option>X</option>
-          <option>Y</option>
-        </select>
+        <select className={`form-select w-50`}>{renderOptions()}</select>
       </div>
       <ReactQuill value={input} onChange={onChangeInput} bounds={`.app`} />
       <div className={`row mt-3`}>{renderWords()}</div>

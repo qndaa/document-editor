@@ -1,18 +1,24 @@
-import json
 from collections import Counter
 
+import flask
+from bs4 import BeautifulSoup
 from flask import Flask, request
+from flask_cors import CORS
 
 from config import tokenizer, model
 from helpers import clean_text
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/predict/', methods=['POST'])
 def predict():
-    input_text = request.form.get('text')
-    contract_type = request.form.get('type')
+    request_data = request.get_json()
+    input_text = request_data.get('text')
+    contract_type = request_data.get('type')
+
+    input_text = BeautifulSoup(input_text).get_text()
 
     generated = tokenizer(f"<|startoftext|> <<{contract_type}>> {input_text}", return_tensors="pt").input_ids.cuda()
     max_length_s_o = len(input_text.split(" ")) + 3
@@ -24,8 +30,9 @@ def predict():
         for sample_output_n_w_p in sample_outputs_n_w_p]
 
     clean = [clean_text(input_text, sample, contract_type) for sample in dirty]
-
-    return json.dumps(Counter(clean).most_common())
+    response = flask.jsonify(Counter(clean).most_common())
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 if __name__ == '__main__':
