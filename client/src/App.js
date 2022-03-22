@@ -48,27 +48,28 @@ function App() {
     example_words[1],
     example_words[3],
   ]);
+  const [contractType, setContractType] = useState(contractTypes[0]);
+  const [loading, setLoading] = useState(false);
 
   const sendOnAPI = (text) => {
     axios
       .post(`http://localhost:5000/predict/`, {
         text: text.trim(),
-        type: "Agency agreement",
+        type: contractType,
       })
       .then((res) => {
         setWords(res.data.splice(0, 3).map((w) => w[0]));
+        setLoading(false);
       });
   };
 
-  const api = useCallback(debounce(sendOnAPI, 400), []);
-
-  const onChangeInput = (event) => {
-    api(event);
-  };
+  const api = useCallback(debounce(sendOnAPI, 2000), []);
 
   const appendWord = (word) => {
-    console.log(word);
-    setInput(input.concat(" ", word));
+    const lastIndexOfP = input.lastIndexOf("</p>");
+    const textWithoutEndP = input.slice(0, lastIndexOfP);
+    const newInput = `${textWithoutEndP} ${word} </p>`;
+    setInput(newInput);
   };
 
   const renderOptions = () => (
@@ -82,14 +83,16 @@ function App() {
   const renderWords = () => {
     return words.map((word) => {
       return (
-        <div className={`col-4`} key={word}>
-          <div
-            className="alert alert-primary"
-            role="alert"
-            onClick={() => appendWord(word)}
+        <div className={`col-1`} key={word}>
+          <button
+            disabled={loading}
+            className="btn btn-outline-success"
+            onClick={() => {
+              appendWord(word);
+            }}
           >
             {word}
-          </div>
+          </button>
         </div>
       );
     });
@@ -102,12 +105,26 @@ function App() {
       </div>
       <div className={`d-flex justify-content-center mb-5 mt-4`}>
         <label className={`p-2 fw-bold`}>Document type:</label>
-        <select className={`form-select w-50`}>{renderOptions()}</select>
+        <select
+          className={`form-select w-50`}
+          onChange={(e) => {
+            setContractType(e.target.value);
+          }}
+        >
+          {renderOptions()}
+        </select>
       </div>
-      <ReactQuill value={input} onChange={onChangeInput} bounds={`.app`} />
+      <ReactQuill
+        value={input}
+        onChange={(e) => {
+          if (e !== "<p><br></p>") {
+            // setLoading(true);
+            api(e);
+            setInput(e);
+          }
+        }}
+      />
       <div className={`row mt-3`}>{renderWords()}</div>
-
-      {/*<button className={`btn btn-primary mt-2 w-100`}><FontAwesomeIcon className={`me-2`} icon={faFilePdf} />Save PDF</button>*/}
     </div>
   );
 }
