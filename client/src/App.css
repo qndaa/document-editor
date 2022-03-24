@@ -1,3 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+:root {
+    /* --button-color: #8064A2 !important; */
+    --button-color: #743ae8;
+  }
+  
+
+body{
+    font-family: 'Poppins', sans-serif;
+}
+
 div.ql-editor  {
     min-height: 30em;
+}
+
+.btn {
+    border-radius: 10px;
+}
+
+.btn-success, .btn-success:hover, .btn-success:active, .btn-success:visited {
+    background-color: var(--button-color);
+    border-color:  var(--button-color);
+}
+
+.btn-outline-success {
+    border-color: var(--button-color);
+    color:  var(--button-color);
+}
+
+.btn-outline-success:visited, .btn-outline-success:hover {
+    background-color: var(--button-color);
+    color: white;
+    border-color: var(--button-color);
 }
