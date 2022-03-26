@@ -57,6 +57,7 @@ function App() {
   const pdfExportComponent = useRef(null);
   const quill = useRef();
   const sendOnAPI = (text) => {
+    console.log(contractType);
     axios
       .post(`http://localhost:5000/predict/`, {
         text: text.trim(),
@@ -156,7 +157,9 @@ function App() {
         <select
           className={`form-select w-50`}
           onChange={(e) => {
-            setContractType(e.target.value);
+            console.log(e);
+            const index = contractTypes.indexOf(e.target.value);
+            setContractType(contractTypes[index]);
           }}
         >
           {renderOptions()}
