@@ -50,18 +50,21 @@ function App() {
     example_words[1],
     example_words[3],
   ]);
-  const [contractType, setContractType] = useState(contractTypes[0]);
   const [loading, setLoading] = useState(false);
+  const [idx, setIdx] = useState(0);
   const fileRef = useRef(null);
 
   const pdfExportComponent = useRef(null);
   const quill = useRef();
+  var index = 0;
+
   const sendOnAPI = (text) => {
-    console.log(contractType);
+    const paragraphs = text.split("<p>");
+    const lastParagraph = paragraphs[paragraphs.length - 1];
     axios
       .post(`http://localhost:5000/predict/`, {
-        text: text.trim(),
-        type: contractType,
+        text: lastParagraph.trim(),
+        type: contractTypes[index],
       })
       .then((res) => {
         setWords(clean(res.data.splice(0, 3).map((w) => w[0])));
@@ -157,9 +160,7 @@ function App() {
         <select
           className={`form-select w-50`}
           onChange={(e) => {
-            console.log(e);
-            const index = contractTypes.indexOf(e.target.value);
-            setContractType(contractTypes[index]);
+            index = contractTypes.indexOf(e.target.value);
           }}
         >
           {renderOptions()}
