@@ -62,7 +62,7 @@ function App() {
     const paragraphs = text.split("<p>");
     const lastParagraph = paragraphs[paragraphs.length - 1];
     axios
-      .post(`http://localhost:5000/predict/`, {
+      .post(`${process.env.REACT_APP_BACKEND_URL}/predict/`, {
         text: lastParagraph.trim(),
         type: contractTypes[index],
       })
