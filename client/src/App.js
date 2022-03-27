@@ -51,7 +51,6 @@ function App() {
     example_words[3],
   ]);
   const [loading, setLoading] = useState(false);
-  const [idx, setIdx] = useState(0);
   const fileRef = useRef(null);
 
   const pdfExportComponent = useRef(null);
