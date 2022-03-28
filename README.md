@@ -7,7 +7,7 @@ U 'client' direktorijumu potrebno je uneti
 npm i
 npm start
 ```
-kako bi se servirala klijentska aplikacija. Napomena je da je neophodno imati instaliran node na sistem pre pokretanja.
+kako bi se servirala klijentska aplikacija. Napomena je da je neophodno imati instaliran node na sistemu pre pokretanja.
 
 ### Backend
 Za ovu aplikaciju preporucujemo pokretanje u okviru okruzenja. Prerekvizit je da sistem ima instaliran python interpreter.
